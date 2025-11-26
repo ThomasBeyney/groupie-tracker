@@ -1,0 +1,29 @@
+[
+  {
+    "id": "a1",
+    "name": "The Echoes",
+    "image": "/assets/images/echoes.jpg",
+    "begin_year": 2008,
+    "first_album": "2010-04-12",
+    "members": ["Liam Rivers", "Sana Cole", "Marco Di"],
+    "country": "United Kingdom"
+  },
+  {
+    "id": "a2",
+    "name": "Solar Tide",
+    "image": "/assets/images/solartide.jpg",
+    "begin_year": 2015,
+    "first_album": "2016-09-01",
+    "members": ["Aiko Tanaka", "Jon Mercado"],
+    "country": "Japan"
+  },
+  {
+    "id": "a3",
+    "name": "Neon Valley",
+    "image": "/assets/images/neonvalley.jpg",
+    "begin_year": 1999,
+    "first_album": "2000-02-20",
+    "members": ["Elena Rossi", "Tom Becker", "Rashid Khan"],
+    "country": "Italy"
+  }
+]

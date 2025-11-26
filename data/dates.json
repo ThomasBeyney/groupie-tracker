@@ -1,0 +1,23 @@
+[
+  {
+    "id": "d1",
+    "artist_id": "a1",
+    "location_id": "l1",
+    "date": "2023-11-05",
+    "type": "past"
+  },
+  {
+    "id": "d2",
+    "artist_id": "a2",
+    "location_id": "l2",
+    "date": "2025-06-18",
+    "type": "upcoming"
+  },
+  {
+    "id": "d3",
+    "artist_id": "a3",
+    "location_id": "l3",
+    "date": "2024-09-02",
+    "type": "upcoming"
+  }
+]

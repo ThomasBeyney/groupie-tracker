@@ -1,0 +1,20 @@
+[
+  {
+    "id": "r1",
+    "artist_id": "a1",
+    "date_id": "d1",
+    "location_id": "l1"
+  },
+  {
+    "id": "r2",
+    "artist_id": "a2",
+    "date_id": "d2",
+    "location_id": "l2"
+  },
+  {
+    "id": "r3",
+    "artist_id": "a3",
+    "date_id": "d3",
+    "location_id": "l3"
+  }
+]

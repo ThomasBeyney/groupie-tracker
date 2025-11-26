@@ -1,0 +1,23 @@
+[
+  {
+    "id": "l1",
+    "venue": "Royal Hall",
+    "city": "London",
+    "country": "United Kingdom",
+    "capacity": 5200
+  },
+  {
+    "id": "l2",
+    "venue": "Sunset Arena",
+    "city": "Osaka",
+    "country": "Japan",
+    "capacity": 8000
+  },
+  {
+    "id": "l3",
+    "venue": "Stazione Centrale",
+    "city": "Milan",
+    "country": "Italy",
+    "capacity": 3500
+  }
+]

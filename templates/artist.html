@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Artiste — Groupie Tracker</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  </head>
+  <body>
+    <header class="site-header"><div class="container header-inner"><h1 class="site-title">Groupie Tracker</h1><nav class="main-nav"><a href="/">Accueil</a><a href="/artists">Artistes</a></nav></div></header>
+    <main class="container">
+      <section class="big-panel">
+        <h2 id="artist-name" style="color:#ffd24d">Chargement…</h2>
+        <div id="artist-members" style="margin-top:0.75rem;color:var(--muted)">Membres : —</div>
+        <div id="artist-locations" style="margin-top:0.75rem;color:var(--muted);display:none">Lieux : Chargement…</div>
+        <div id="artist-map" style="height:360px;margin-top:0.75rem"></div>
+      </section>
+      <p><a href="/artists">Retour à la liste des artistes</a></p>
+    </main>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/assets/artist.js?v=3"></script>
+  </body>
+</html>

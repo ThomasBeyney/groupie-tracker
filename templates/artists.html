@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Artistes — Groupie Tracker</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+  </head>
+  <body>
+    <header class="site-header"><div class="container header-inner"><h1 class="site-title">Groupie Tracker</h1><nav class="main-nav"><a href="/">Accueil</a><a href="/artists">Artistes</a></nav></div></header>
+    <main class="container">
+      <section class="big-panel">
+        <h2 style="color:#ffd24d;margin:0 0 0.5rem;">Artistes</h2>
+        <p class="lead" style="color:var(--muted)">Liste des artistes récupérés depuis l'API.</p>
+        <div class="search-bar" style="margin-top:1rem">
+          <input id="artist-search" type="search" placeholder="Rechercher un artiste (nom, membre)..." aria-label="Rechercher un artiste" />
+        </div>
+      </section>
+
+      <section id="artists-list">
+        <div class="big-panel">Chargement des artistes…</div>
+      </section>
+
+      <p style="margin-top:1rem"><a href="/">Retour à l'accueil</a></p>
+    </main>
+
+    <script src="/assets/artists.js?v=2"></script>
+  </body>
+</html>

@@ -3,32 +3,51 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>{{.Title}}</title>
+    <title>Groupie Tracker — Accueil</title>
     <link rel="stylesheet" href="/assets/style.css" />
   </head>
   <body>
-    <header>
-      <h1>{{.Title}}</h1>
-      <p>Prototype minimal — page d'accueil pour démarrer le projet.</p>
+    <header class="site-header">
+      <div class="container header-inner">
+        <h1 class="site-title">Groupie Tracker</h1>
+      </div>
     </header>
 
-    <main>
-      <section>
-        <h2>Bienvenue</h2>
-        <p>Ceci est une base pour afficher les informations des groupes. Vous pouvez l'améliorer avec des cartes, tableaux, graphiques, etc.</p>
-      </section>
-      <section>
-        <h3>Exemple de navigation</h3>
-        <ul>
-          <li><a href="#">Groupes (à venir)</a></li>
-          <li><a href="#">Cartes (à venir)</a></li>
-          <li><a href="#">Graphiques (à venir)</a></li>
-        </ul>
+    <section class="hero">
+      <div class="container hero-inner">
+        <h2 class="hero-title">Explorer les artistes et concerts</h2>
+        <p class="lead">Consomme l'API fournie pour afficher les artistes, les lieux et les dates. Navigue avec les liens ci-dessous.</p>
+
+        <div class="mode-buttons">
+          <a class="btn btn-primary" href="/artists">Artistes</a>
+        </div>
+
+      </div>
+    </section>
+
+    <main class="container">
+      <section class="features">
+        <article class="feature">
+          <h3>But</h3>
+          <p>Afficher et explorer les données des artistes et événements provenant de l'API.</p>
+        </article>
+
+        <article class="feature">
+          <h3>Utilisation</h3>
+          <ul>
+            <li>Clique sur « Artistes » pour voir la liste des artistes.</li>
+            <li>Retourne à l'accueil en cliquant sur le logo ou « Back » sur les pages.</li>
+            <li>Les requêtes sont proxifiées côté serveur pour éviter les problèmes CORS.</li>
+          </ul>
+        </article>
+
+        <article class="feature">
+          <h3>Prochaines améliorations</h3>
+          <p>Ajout de vues détaillées, filtres, et visualisations (cartes, tableaux, graphiques).</p>
+        </article>
       </section>
     </main>
 
-    <footer>
-      <small>Groupie Tracker — prototype</small>
     </footer>
   </body>
 </html>
