@@ -57,7 +57,6 @@
       title.className = 'card-title';
       title.textContent = artist.name || 'Nom inconnu';
 
-      // ⚠️ La ligne "Pays :" a été retirée
       const meta = document.createElement('div');
       meta.className = 'card-meta';
       meta.innerHTML = `<strong>Début :</strong> ${artist.creationDate || 'N/A'}`;
