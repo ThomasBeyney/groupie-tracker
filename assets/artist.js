@@ -11,91 +11,88 @@
   const elCreation = document.getElementById('artist-creation');
   const elPhoto = document.getElementById('artist-photo');
   const elLocations = document.getElementById('artist-locations');
-  const mapEl = document.getElementById('artist-map');
 
   if(!id){
     elName.textContent = 'Artiste non spécifié';
     return;
   }
 
-  // 1) Charger les artistes pour trouver celui qui correspond
+  // 1) Charger l'artiste
   fetch('/api/artists')
     .then(r => r.json())
     .then(data => {
-      const artist = data.find(x => x.id == id);
+      const artist = data.find(a => a.id == id);
       if(!artist){
         elName.textContent = 'Artiste non trouvé';
         return;
       }
 
-      // Remplir les infos
       elName.textContent = artist.name;
       elPhoto.src = artist.image;
-
       elCreation.textContent = 'Création : ' + (artist.creationDate || 'N/A');
 
-      // Membres (singulier/pluriel)
       if(Array.isArray(artist.members)){
-        let count = artist.members.length;
-        let label = count > 1 ? 'Membres' : 'Membre';
-        elMembers.textContent = label + ' : ' + artist.members.join(', ');
+        const label = artist.members.length > 1 ? 'Membres' : 'Membre';
+        elMembers.textContent = `${label} : ${artist.members.join(', ')}`;
       } else {
         elMembers.textContent = 'Membres : N/A';
       }
 
-      // 2) Initialiser la carte Leaflet
-      let map = L.map('artist-map');
+      // 2) Initialiser la carte avec un centre mondial par défaut
+      let map = L.map('artist-map').setView([20,0], 2);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
 
-      // 3) Charger toutes les locations
+      // 3) Charger les lieux de concert
       fetch('/api/locations')
-        .then(r2 => r2.json())
+        .then(r => r.json())
         .then(locData => {
-
           const idx = Array.isArray(locData.index) ? locData.index : locData;
           const entry = idx.find(l => l.id == artist.id);
 
-          if(!entry || !entry.locations || entry.locations.length === 0){
+          if(!entry || !entry.locations || entry.locations.length===0){
             elLocations.textContent = "Aucun lieu répertorié";
             elLocations.style.display = "block";
             return;
           }
 
-          // Convertir les lieux en coordonnées via "/api/geocode"
-          const geocodePromises = entry.locations.map(loc => {
-            const parts = loc.split('-');
-            const city = parts[0].replace(/_/g, ' ');
-            const country = parts[1]?.replace(/_/g, ' ') || '';
-            const query = city + (country ? ', ' + country : '');
+          elLocations.style.display = "block";
+          elLocations.textContent = `Lieux : ${entry.locations.join(', ')}`;
+
+          // 4) Pour chaque lieu, essayer d'utiliser l'API geocode, sinon fallback sur cities.js
+          const geoPromises = entry.locations.map(loc => {
+            const [cityPart, countryPart] = (loc||'').split('-');
+            const city = (cityPart||'').replace(/_/g,' ');
+            const country = (countryPart||'').replace(/_/g,' ');
+            const query = city + (country ? ', '+country : '');
 
             return fetch('/api/geocode?q=' + encodeURIComponent(query))
-              .then(r => r.json())
-              .then(arr => ({ query, result: arr[0] || null }))
-              .catch(() => ({ query, result: null }));
+              .then(res => res.ok ? res.json() : [])
+              .then(arr => arr[0] ? {query, lat: parseFloat(arr[0].lat), lon: parseFloat(arr[0].lon)} : null)
+              .catch(() => null)
+              .then(result => {
+                if(!result && window.CITY_COORDS && loc in window.CITY_COORDS){
+                  const c = window.CITY_COORDS[loc];
+                  return {query, lat: c.lat, lon: c.lon};
+                }
+                return result;
+              });
           });
 
-          Promise.all(geocodePromises).then(results => {
+          Promise.all(geoPromises).then(results => {
             const markers = [];
-
-            results.forEach(item => {
-              if(item.result && item.result.lat && item.result.lon){
-                const m = L.marker([item.result.lat, item.result.lon])
-                  .addTo(map)
-                  .bindPopup(item.query);
-                markers.push(m);
+            results.forEach(r => {
+              if(r && r.lat && r.lon){
+                L.marker([r.lat,r.lon]).addTo(map).bindPopup(r.query);
+                markers.push([r.lat,r.lon]);
               }
             });
-
             if(markers.length > 0){
-              const group = L.featureGroup(markers);
-              map.fitBounds(group.getBounds(), { padding: [30,30] });
-            } else {
-              elLocations.textContent = "Pas de coordonnées trouvées";
-              elLocations.style.display = "block";
+              map.fitBounds(markers);
             }
           });
+
         });
-    })
+    });
 })();

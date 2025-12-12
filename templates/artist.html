@@ -43,39 +43,29 @@
 </header>
 
 <main class="container">
-
   <section class="big-panel">
-
     <div class="artist-layout">
-      
-      <!-- PHOTO -->
       <img id="artist-photo" class="artist-photo" src="" alt="Photo artiste">
-
-      <!-- INFOS -->
       <div class="artist-info">
         <h2 id="artist-name" style="color:#ffd24d">Chargement…</h2>
-
         <div id="artist-creation" style="color:var(--muted)">Création : —</div>
-
-        <div id="artist-members" style="color:var(--muted)">
-          Membres : —
-        </div>
+        <div id="artist-members" style="color:var(--muted)">Membres : —</div>
       </div>
     </div>
 
-    <!-- MAP -->
     <div id="artist-map"></div>
     <div id="artist-locations" style="margin-top:0.75rem;color:var(--muted);display:none">
       Lieux : Chargement…
     </div>
-
   </section>
 
   <p><a href="/artists">Retour à la liste des artistes</a></p>
-
 </main>
 
+<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="/assets/artist.js?v=4"></script>
+<!-- cities.js doit être inclus avant artist.js -->
+<script src="/assets/cities.js"></script>
+<script src="/assets/artist.js?v=5"></script>
 </body>
 </html>
