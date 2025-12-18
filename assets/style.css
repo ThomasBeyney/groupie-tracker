@@ -34,24 +34,87 @@ body{
 .site-title{ margin:0; color:#fff }
 .main-nav{ display:flex; gap:0.6rem; align-items:center }
 .main-nav a{
-  background: transparent;
-  color: var(--text-main);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  text-decoration: none;
   font-weight: 600;
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: none;
+
+  color: var(--text-main);
+  background: linear-gradient(
+    135deg,
+    var(--accent-violet),
+    var(--accent-rose)
+  );
+
+  border: none;
+  box-shadow:
+    0 0 0 rgba(0,0,0,0);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
 }
 
 .main-nav a:hover{
-  color: var(--accent-violet);
-  border-color: var(--border-glow);
-  box-shadow: 0 0 12px var(--border-glow);
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow:
+    0 0 12px rgba(124,58,237,0.6),
+    0 0 24px rgba(236,72,153,0.4);
 }
+
 .main-nav a:active{ transform:translateY(0) }
 .main-nav a.ghost{
   color: var(--text-muted);
   border-color: rgba(255,255,255,0.05);
 }
 
+/* NEON GRADIENT BUTTON (global) */
+.btn-neon{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+
+  color: var(--text-main);
+  background: linear-gradient(
+    135deg,
+    var(--accent-violet),
+    var(--accent-rose)
+  );
+
+  border: none;
+  cursor: pointer;
+
+  box-shadow: 0 0 0 rgba(0,0,0,0);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.btn-neon:hover{
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow:
+    0 0 12px rgba(124,58,237,0.6),
+    0 0 24px rgba(236,72,153,0.4);
+}
+
+.btn-neon:active{
+  transform: translateY(0);
+}
 
 /* HERO */
 .hero{ padding:3.5rem 0; }
