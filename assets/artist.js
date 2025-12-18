@@ -1,4 +1,5 @@
-(function(){
+document.addEventListener('DOMContentLoaded', () => {
+
   function getQueryParam(name){
     const params = new URLSearchParams(window.location.search);
     return params.get(name);
@@ -7,6 +8,7 @@
   const id = getQueryParam('id');
 
   const elName = document.getElementById('artist-name');
+  const elFirstAlbum = document.getElementById('artist-first-album');
   const elMembers = document.getElementById('artist-members');
   const elCreation = document.getElementById('artist-creation');
   const elPhoto = document.getElementById('artist-photo');
@@ -30,6 +32,7 @@
       elName.textContent = artist.name;
       elPhoto.src = artist.image;
       elCreation.textContent = 'Création : ' + (artist.creationDate || 'N/A');
+      elFirstAlbum.textContent = 'Premier album : ' + (artist.firstAlbum || 'N/A');
 
       if(Array.isArray(artist.members)){
         const label = artist.members.length > 1 ? 'Membres' : 'Membre';
@@ -38,20 +41,20 @@
         elMembers.textContent = 'Membres : N/A';
       }
 
-      // 2) Initialiser la carte avec un centre mondial par défaut
+      // 2) Initialiser la carte
       let map = L.map('artist-map').setView([20,0], 2);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
 
-      // 3) Charger les lieux de concert
+      // 3) Charger les lieux
       fetch('/api/locations')
         .then(r => r.json())
         .then(locData => {
           const idx = Array.isArray(locData.index) ? locData.index : locData;
           const entry = idx.find(l => l.id == artist.id);
 
-          if(!entry || !entry.locations || entry.locations.length===0){
+          if(!entry || !entry.locations || entry.locations.length === 0){
             elLocations.textContent = "Aucun lieu répertorié";
             elLocations.style.display = "block";
             return;
@@ -60,21 +63,23 @@
           elLocations.style.display = "block";
           elLocations.textContent = `Lieux : ${entry.locations.join(', ')}`;
 
-          // 4) Pour chaque lieu, essayer d'utiliser l'API geocode, sinon fallback sur cities.js
           const geoPromises = entry.locations.map(loc => {
-            const [cityPart, countryPart] = (loc||'').split('-');
-            const city = (cityPart||'').replace(/_/g,' ');
-            const country = (countryPart||'').replace(/_/g,' ');
-            const query = city + (country ? ', '+country : '');
+            const [cityPart, countryPart] = (loc || '').split('-');
+            const city = (cityPart || '').replace(/_/g,' ');
+            const country = (countryPart || '').replace(/_/g,' ');
+            const query = city + (country ? ', ' + country : '');
 
             return fetch('/api/geocode?q=' + encodeURIComponent(query))
               .then(res => res.ok ? res.json() : [])
-              .then(arr => arr[0] ? {query, lat: parseFloat(arr[0].lat), lon: parseFloat(arr[0].lon)} : null)
+              .then(arr => arr[0]
+                ? { query, lat: +arr[0].lat, lon: +arr[0].lon }
+                : null
+              )
               .catch(() => null)
               .then(result => {
                 if(!result && window.CITY_COORDS && loc in window.CITY_COORDS){
                   const c = window.CITY_COORDS[loc];
-                  return {query, lat: c.lat, lon: c.lon};
+                  return { query, lat: c.lat, lon: c.lon };
                 }
                 return result;
               });
@@ -84,15 +89,14 @@
             const markers = [];
             results.forEach(r => {
               if(r && r.lat && r.lon){
-                L.marker([r.lat,r.lon]).addTo(map).bindPopup(r.query);
-                markers.push([r.lat,r.lon]);
+                L.marker([r.lat, r.lon]).addTo(map).bindPopup(r.query);
+                markers.push([r.lat, r.lon]);
               }
             });
             if(markers.length > 0){
               map.fitBounds(markers);
             }
           });
-
         });
     });
-})();
+});
