@@ -36,6 +36,7 @@ func main() {
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/artists", artistsPageHandler)
 	http.HandleFunc("/artist", artistPageHandler)
+	http.HandleFunc("/relation", relationPageHandler)
 
 	addr := ":8080"
 	log.Printf("Starting server at http://localhost%s\n", addr)
@@ -71,7 +72,7 @@ func proxyHandler(remote string) http.HandlerFunc {
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	data := struct{
+	data := struct {
 		Title string
 	}{Title: "Groupie Tracker — Accueil"}
 
@@ -88,6 +89,12 @@ func artistsPageHandler(w http.ResponseWriter, r *http.Request) {
 
 func artistPageHandler(w http.ResponseWriter, r *http.Request) {
 	if err := tmpl.ExecuteTemplate(w, "artist.html", nil); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func relationPageHandler(w http.ResponseWriter, r *http.Request) {
+	if err := tmpl.ExecuteTemplate(w, "relation.html", nil); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
