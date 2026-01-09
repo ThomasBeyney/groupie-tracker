@@ -19,9 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // 1) Charger l'artiste
+  // Charger l'artiste
   fetch('/api/artists')
-    .then(r => r.json())
+    .then(res => res.json())
     .then(data => {
       const artist = data.find(a => a.id == id);
       if(!artist){
@@ -29,11 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // Infos principales
       elName.textContent = artist.name;
       elPhoto.src = artist.image;
       elCreation.textContent = 'Création : ' + (artist.creationDate || 'N/A');
       elFirstAlbum.textContent = 'Premier album : ' + (artist.firstAlbum || 'N/A');
 
+      // Membres
       if(Array.isArray(artist.members)){
         const label = artist.members.length > 1 ? 'Membres' : 'Membre';
         elMembers.textContent = `${label} : ${artist.members.join(', ')}`;
@@ -41,13 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
         elMembers.textContent = 'Membres : N/A';
       }
 
-      // 2) Initialiser la carte
-      let map = L.map('artist-map').setView([20,0], 2);
+      // Initialiser la carte
+      const map = L.map('artist-map').setView([20,0], 2);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
 
-      // 3) Charger les lieux
+      // Charger les lieux
       fetch('/api/locations')
         .then(r => r.json())
         .then(locData => {
@@ -63,18 +65,15 @@ document.addEventListener('DOMContentLoaded', () => {
           elLocations.style.display = "block";
           elLocations.textContent = `Lieux : ${entry.locations.join(', ')}`;
 
+          // Géocodage et ajout des markers
           const geoPromises = entry.locations.map(loc => {
             const [cityPart, countryPart] = (loc || '').split('-');
             const city = (cityPart || '').replace(/_/g,' ');
             const country = (countryPart || '').replace(/_/g,' ');
             const query = city + (country ? ', ' + country : '');
-
             return fetch('/api/geocode?q=' + encodeURIComponent(query))
               .then(res => res.ok ? res.json() : [])
-              .then(arr => arr[0]
-                ? { query, lat: +arr[0].lat, lon: +arr[0].lon }
-                : null
-              )
+              .then(arr => arr[0] ? { query, lat: +arr[0].lat, lon: +arr[0].lon } : null)
               .catch(() => null)
               .then(result => {
                 if(!result && window.CITY_COORDS && loc in window.CITY_COORDS){
@@ -93,10 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 markers.push([r.lat, r.lon]);
               }
             });
-            if(markers.length > 0){
-              map.fitBounds(markers);
-            }
+            if(markers.length > 0) map.fitBounds(markers);
           });
         });
+
     });
 });
