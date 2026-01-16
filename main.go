@@ -12,7 +12,7 @@ import (
 var tmpl *template.Template
 
 func main() {
-	// Parse templates from the templates/ directory
+	// Parse templates from the templates/ directori
 	var err error
 	tmpl, err = template.ParseGlob("templates/*.html")
 	if err != nil {
