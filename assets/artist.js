@@ -4,10 +4,22 @@
   if (!id) return document.getElementById('artist-name').textContent = 'Artiste non spécifié';
   const artistIdNum = parseInt(id, 10);
 
-  const map = L.map('artist-map').setView([20, 0], 2);
+  // Initialiser la carte
+  const map = L.map('artist-map', {
+    minZoom: 2,    // plus petit zoom (ne pas voir tout le vide)
+    maxZoom: 10,   // zoom max si tu veux limiter
+    maxBounds: [   // limiter le déplacement à la zone du globe
+      [-90, -180], // coin sud-ouest
+      [90, 180]    // coin nord-est
+    ],
+    maxBoundsViscosity: 1.0   // empêche de dépasser les limites
+  }).setView([20, 0], 2);
+
+  // Ajouter les tuiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
+
 
   // Fonction pour créer les cartes de concerts
   function createConcertCard(locationName, dates) {
