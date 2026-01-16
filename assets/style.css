@@ -332,6 +332,10 @@ body{
   display: none;
 }
 
+#artist-members {
+  color: var(--text-main) !important;
+}
+
 /* === ARTIST CONCERTS === */
 .concert-card {
   background: var(--card-bg);
