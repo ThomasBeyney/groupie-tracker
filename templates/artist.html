@@ -14,24 +14,22 @@
       <section class="big-panel">
         <div style="display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap">
           <div id="artist-image-container" style="flex-shrink:0">
-            <img id="artist-image" src="/assets/images/placeholder.svg" alt="Artiste" style="width:200px;height:200px;border-radius:12px;object-fit:cover" />
+            <img id="artist-photo" src="/assets/images/placeholder.svg" alt="Artiste" style="width:200px;height:200px;border-radius:12px;object-fit:cover" />
           </div>
           <div style="flex:1;min-width:300px">
             <h2 id="artist-name" style="color:#ffd24d;margin:0 0 0.5rem">Chargement…</h2>
             <div id="artist-info" style="color:var(--muted);line-height:1.8">
-              <div><strong style="color:#ffd24d">Date de création :</strong> <span id="artist-creation-date">—</span></div>
-              <div><strong style="color:#ffd24d">Premier album :</strong> <span id="artist-first-album">—</span></div>
-              <div><strong style="color:#ffd24d">Pays :</strong> <span id="artist-country">—</span></div>
-              <div id="artist-members" style="margin-top:0.5rem"><strong style="color:#ffd24d">Membres :</strong> —</div>
+              <div id="artist-creation" style="color:var(--muted)">—</div>
+              <div id="artist-first-album" style="color:var(--muted)">—</div>
+              <div id="artist-members" style="margin-top:0.5rem;color:var(--muted)">—</div>
             </div>
           </div>
         </div>
       </section>
 
       <section class="big-panel" style="margin-top:1rem">
-        <h3 style="color:#ffd24d;margin:0 0 1rem">Dates et lieux de concert</h3>
-        <div id="artist-dates-locations" style="color:var(--muted)">Chargement des dates et lieux…</div>
-        <div id="artist-locations" style="margin-top:1rem;color:var(--muted);display:none">Lieux : Chargement…</div>
+        <h3 style="color:#ffd24d;margin:0 0 1rem">Lieux de concert</h3>
+        <div id="artist-locations" style="color:var(--muted);display:none">Chargement…</div>
         <div id="artist-map" style="height:400px;margin-top:1rem;border-radius:12px;overflow:hidden"></div>
       </section>
 
