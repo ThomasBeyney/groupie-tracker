@@ -120,19 +120,28 @@
           const mapEl = document.getElementById('artist-map');
           const locationsEl = document.getElementById('artist-locations');
           
-          if(mapEl){
+          if(mapEl && locationKeys && locationKeys.length > 0){
             if(locationsEl) locationsEl.style.display = 'none';
             
-            let map;
-            try { 
-              map = L.map('artist-map'); 
-            } catch (err) { 
-              console.error('Leaflet error:', err);
-              if(locationsEl) locationsEl.textContent = 'Lieux : impossible d\'initialiser la carte';
+            if(typeof L === 'undefined'){
+              if(locationsEl) {
+                locationsEl.style.display = 'block';
+                locationsEl.textContent = 'Lieux : bibliothèque de carte non chargée';
+              }
               return;
             }
             
-            // Add tile layer
+            let map;
+            try { 
+              map = L.map('artist-map').setView([51.505, -0.09], 2); 
+            } catch (err) { 
+              if(locationsEl) {
+                locationsEl.style.display = 'block';
+                locationsEl.textContent = 'Lieux : impossible d\'initialiser la carte';
+              }
+              return;
+            }
+            
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
               attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
@@ -162,7 +171,8 @@
                   const lat = parseFloat(res.result.lat);
                   const lon = parseFloat(res.result.lon);
                   
-                  // Create popup content with dates
+                  if(isNaN(lat) || isNaN(lon)) return;
+                  
                   const dates = Array.isArray(res.dates) ? res.dates : [];
                   const datesText = dates.length > 0 ? '<br/><strong>Dates:</strong> ' + dates.slice(0, 5).join(', ') + (dates.length > 5 ? '...' : '') : '';
                   const popupContent = `<strong>${res.query}</strong>${datesText}`;
@@ -186,7 +196,6 @@
               map.fitBounds(group.getBounds(), { padding: [50, 50] });
             })
             .catch(err2 => { 
-              console.error('Map error:', err2);
               if(locationsEl) {
                 locationsEl.style.display = 'block';
                 locationsEl.textContent = 'Erreur chargement carte: ' + err2.message;
@@ -195,13 +204,11 @@
           }
         })
         .catch(err => {
-          console.error('Relations error:', err);
           const datesLocationsEl = document.getElementById('artist-dates-locations');
           if(datesLocationsEl) datesLocationsEl.textContent = 'Erreur lors du chargement des dates et lieux';
         });
     })
     .catch(err => { 
-      console.error('Artist error:', err);
       const el = document.getElementById('artist-name');
       if(el) el.textContent = 'Erreur: ' + err.message;
     });
