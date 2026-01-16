@@ -54,10 +54,15 @@
       }
       document.getElementById('artist-creation-date').textContent = artist.creationDate || artist.creation_date || artist.begin_year || 'N/A';
       document.getElementById('artist-first-album').textContent = artist.firstAlbum || artist.first_album || 'N/A';
-      document.getElementById('artist-country').textContent = artist.country || 'N/A';
       const membersEl = document.getElementById('artist-members');
       const members = Array.isArray(artist.members) ? artist.members.join(', ') : (artist.members || 'N/A');
-      membersEl.innerHTML = `<strong>Membres :</strong> ${members}`;
+      if(membersEl){
+        const membersArray = Array.isArray(artist.members) ? artist.members : (artist.members || '').split(',');
+        const html = `<strong>Membres :</strong> <div class="artist-members">` +
+                    membersArray.map(m => `<span>${m.trim()}</span>`).join('') +
+                    `</div>`;
+        membersEl.innerHTML = html;
+      }
 
       // FETCH RELATIONS
       fetch('/api/relation')

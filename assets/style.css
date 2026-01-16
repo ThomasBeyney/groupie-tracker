@@ -306,6 +306,24 @@ body{
   object-fit: cover;
 }
 
+/* Conteneur des membres */
+.artist-members {
+  display: flex;
+  flex-wrap: wrap;       /* passe à la ligne si trop long */
+  gap: 0.5rem;           /* espace entre les "pills" */
+  margin-top: 0.5rem;
+}
+
+/* Chaque membre */
+.artist-members span {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  white-space: nowrap;   /* empêche le texte de se couper */
+}
+
 #artist-map {
   height: 350px;
   margin-top: 1rem;
