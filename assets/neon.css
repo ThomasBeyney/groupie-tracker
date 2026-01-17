@@ -1,0 +1,53 @@
+/* ===== THEME NEON (SURCHARGE) ===== */
+
+:root {
+  --neon-violet: #7c3aed;
+  --neon-blue: #3b82f6;
+  --neon-pink: #ec4899;
+}
+
+/* Header */
+.site-header {
+  background: rgba(12, 12, 15, 0.85);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(124, 58, 237, 0.25);
+}
+
+.site-title {
+  background: linear-gradient(90deg, var(--neon-violet), var(--neon-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Nav buttons */
+.main-nav a {
+  background: transparent;
+  color: #f9fafb;
+  border: 1px solid rgba(124, 58, 237, 0.35);
+}
+
+.main-nav a:hover {
+  box-shadow:
+    0 0 8px var(--neon-violet),
+    0 0 16px var(--neon-pink);
+  color: var(--neon-pink);
+}
+
+/* Artist cards (page artists) */
+.card {
+  background: rgba(12, 12, 15, 0.8);
+  border-radius: 16px;
+  border: 1px solid rgba(124, 58, 237, 0.25);
+}
+
+.card:hover {
+  box-shadow:
+    0 0 12px rgba(124, 58, 237, 0.6),
+    0 0 24px rgba(59, 130, 246, 0.4);
+}
+
+/* Artist images */
+.card img,
+.artist-photo {
+  border-radius: 12px;
+}
