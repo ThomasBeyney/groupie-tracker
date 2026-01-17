@@ -187,3 +187,72 @@ window.CITY_COORDS = {
   "berwyn-usa": { lat: 41.8506, lon: -87.7935 },
   "rotselaar-belgium": { lat: 50.9676, lon: 4.6954 }
 };
+
+// =============================
+// Formatage lisible des lieux
+// =============================
+window.formatLocationName = function(locationKey) {
+  if (!locationKey || typeof locationKey !== 'string') return locationKey;
+
+  const [cityRaw = '', countryRaw = ''] = locationKey.split('-');
+
+  const capitalizeWords = str =>
+    str
+      .replace(/_/g, ' ')
+      .toLowerCase()
+      .replace(/\b\w/g, c => c.toUpperCase());
+
+  const countryMap = {
+    usa: 'États-Unis',
+    uk: 'Royaume-Uni',
+    mexico: 'Mexique',
+    france: 'France',
+    germany: 'Allemagne',
+    spain: 'Espagne',
+    italy: 'Italie',
+    brazil: 'Brésil',
+    argentina: 'Argentine',
+    japan: 'Japon',
+    china: 'Chine',
+    sweden: 'Suède',
+    switzerland: 'Suisse',
+    belgium: 'Belgique',
+    portugal: 'Portugal',
+    netherlands: 'Pays-Bas',
+    australia: 'Australie',
+    canada: 'Canada',
+    poland: 'Pologne',
+    austria: 'Autriche',
+    finland: 'Finlande',
+    norway: 'Norvège',
+    ireland: 'Irlande',
+    denmark: 'Danemark',
+    qatar: 'Qatar',
+    chile: 'Chili',
+    india: 'Inde',
+    indonesia: 'Indonésie',
+    thailand: 'Thaïlande',
+    taiwan: 'Taïwan',
+    south_korea: 'Corée du Sud',
+    new_zealand: 'Nouvelle-Zélande',
+    united_arab_emirates: 'Émirats arabes unis',
+    saudi_arabia: 'Arabie saoudite',
+    czechia: 'Tchéquie',
+    romania: 'Roumanie',
+    slovakia: 'Slovaquie',
+    hungary: 'Hongrie',
+    colombia: 'Colombie',
+    costa_rica: 'Costa Rica',
+    netherlands_antilles: 'Antilles néerlandaises',
+    french_polynesia: 'Polynésie française',
+    new_caledonia: 'Nouvelle-Calédonie'
+  };
+
+  const city = capitalizeWords(cityRaw);
+  const country =
+    countryMap[countryRaw.toLowerCase()] ||
+    capitalizeWords(countryRaw);
+
+  return country ? `${city}, ${country}` : city;
+};
+

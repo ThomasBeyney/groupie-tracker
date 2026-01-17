@@ -1,4 +1,8 @@
 (function() {
+  if (typeof window.formatLocationName !== 'function') {
+    console.error("window.formatLocationName n'est pas défini !");
+  }
+
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
   if (!id) return document.getElementById('artist-name').textContent = 'Artiste non spécifié';
@@ -88,10 +92,10 @@
           datesLocationsEl.innerHTML = '';
           const markers = [];
           locationKeys.forEach(locationKey => {
-            const parts = locationKey.split('-');
-            const city = (parts[0] || '').replace(/_/g, ' ');
-            const country = (parts[1] || '').replace(/_/g, ' ');
-            const locationName = country ? `${city}, ${country}` : city;
+            const locationName = (typeof window.formatLocationName === 'function') 
+              ? window.formatLocationName(locationKey) 
+              : locationKey.replace(/_/g,' ');
+
             const dates = datesLocations[locationKey];
 
             datesLocationsEl.appendChild(createConcertCard(locationName, dates));
@@ -116,11 +120,11 @@
               .addTo(map)
               .bindPopup(`
                 <div class="map-popup">
-                  <strong>${locationName}</strong><br/>
-                  <span class="popup-label">Dates :</span>
-                  <span class="popup-dates">
+                  <div class="map-popup-title">${locationName}</div>
+                  <div class="map-popup-dates">
+                    <span class="label">Dates :</span>
                     ${dates.slice(0, 5).join(', ')}${dates.length > 5 ? '...' : ''}
-                  </span>
+                  </div>
                 </div>
               `);
 
@@ -129,7 +133,10 @@
             });
           });
         })
-        .catch(() => document.getElementById('artist-dates-locations').textContent = 'Erreur lors du chargement des dates et lieux');
+        .catch(err => {
+          console.error("Erreur chargement concerts :", err); // log réel de l'erreur
+          document.getElementById('artist-dates-locations').textContent = 'Erreur lors du chargement des dates et lieux';
+        });
     })
     .catch(err => {
       document.getElementById('artist-name').textContent = 'Erreur: ' + err;
