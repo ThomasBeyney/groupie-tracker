@@ -1,89 +1,141 @@
-// Read ?id= from URL and display artist name (minimal detail page)
-(function(){
-  function getQueryParam(name){
-    const params = new URLSearchParams(window.location.search);
-    return params.get(name);
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if (!id) return document.getElementById('artist-name').textContent = 'Artiste non spécifié';
+  const artistIdNum = parseInt(id, 10);
+
+  // Initialiser la carte
+  const map = L.map('artist-map', {
+    minZoom: 2,    // plus petit zoom (ne pas voir tout le vide)
+    maxZoom: 10,   // zoom max si tu veux limiter
+    maxBounds: [   // limiter le déplacement à la zone du globe
+      [-90, -180], // coin sud-ouest
+      [90, 180]    // coin nord-est
+    ],
+    maxBoundsViscosity: 1.0   // empêche de dépasser les limites
+  }).setView([20, 0], 2);
+
+  const neonMarker = L.divIcon({
+    className: 'neon-marker',
+    html: '<div class="dot"></div>',
+    iconSize: [18, 18],
+    iconAnchor: [9, 9],
+  });
+
+  // Ajouter les tuiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+
+  // Fonction pour créer les cartes de concerts
+  function createConcertCard(locationName, dates) {
+    const card = document.createElement('div');
+    card.className = 'concert-card';
+
+    const loc = document.createElement('div');
+    loc.className = 'concert-location';
+    loc.textContent = locationName;
+
+    const dateEl = document.createElement('div');
+    dateEl.className = 'concert-dates';
+    dateEl.textContent = dates.length === 1 ? `Date : ${dates[0]}` : `Dates (${dates.length}) : ${dates.slice(0, 10).join(', ')}${dates.length > 10 ? '...' : ''}`;
+
+    card.appendChild(loc);
+    card.appendChild(dateEl);
+    return card;
   }
 
-  const id = getQueryParam('id');
-  const el = document.getElementById('artist-name');
-  if(!el) return;
-  if(!id){ el.textContent = 'Artiste non spécifié'; return }
-
   fetch('/api/artists')
-    .then(r => { if(!r.ok) throw new Error('Erreur réseau'); return r.json() })
-    .then(data => {
-      if(!Array.isArray(data)){ el.textContent = 'Données inattendues'; return }
-      const a = data.find(x => (x.id||x.ID||x._id||'')==id);
-      if(!a){ el.textContent = 'Artiste non trouvé'; return }
-      el.textContent = a.name || a.nom || 'Nom inconnu';
-      // Show members if present
+    .then(r => r.ok ? r.json() : Promise.reject('Erreur réseau (artistes)'))
+    .then(artistsData => {
+      const artist = artistsData.find(a => (a.id || a.ID || a._id) == id || (a.id || a.ID || a._id) == artistIdNum);
+      if (!artist) return document.getElementById('artist-name').textContent = 'Artiste non trouvé';
+
+      // Affichage infos principales
+      document.getElementById('artist-name').textContent = artist.name || artist.nom || 'Nom inconnu';
+      if (artist.image) {
+        const img = document.getElementById('artist-image');
+        img.src = artist.image;
+        img.alt = artist.name || 'Artiste';
+      }
+      document.getElementById('artist-creation-date').textContent = artist.creationDate || artist.creation_date || artist.begin_year || 'N/A';
+      document.getElementById('artist-first-album').textContent = artist.firstAlbum || artist.first_album || 'N/A';
       const membersEl = document.getElementById('artist-members');
+      const members = Array.isArray(artist.members) ? artist.members.join(', ') : (artist.members || 'N/A');
       if(membersEl){
-        const members = Array.isArray(a.members) ? a.members.join(', ') : (a.members || 'N/A');
-        membersEl.textContent = 'Membres : ' + members;
+        const membersArray = Array.isArray(artist.members) ? artist.members : (artist.members || '').split(',');
+        const html = `<strong>Membres :</strong> <div class="artist-members">` +
+                    membersArray.map(m => `<span>${m.trim()}</span>`).join('') +
+                    `</div>`;
+        membersEl.innerHTML = html;
       }
-      // Fetch locations index and display them on a Leaflet map for this artist
-      const locationsEl = document.getElementById('artist-locations');
-      const mapEl = document.getElementById('artist-map');
-      if(mapEl){
-        // show/hide fallback text
-        if(locationsEl) locationsEl.style.display = 'none';
-        // initialize map
-        let map;
-        try { map = L.map('artist-map'); } catch (err) { map = null; }
-        if(map){
-          // add tile layer
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-          }).addTo(map);
 
-          // get the locations index and geocode each place via our server proxy
-          fetch('/api/locations')
-            .then(r2 => { if(!r2.ok) throw new Error('Erreur réseau (locations)'); return r2.json() })
-            .then(locData => {
-              const idx = Array.isArray(locData.index) ? locData.index : locData;
-              const entry = (Array.isArray(idx) && idx.find(it => (it.id||'')==a.id)) || null;
-              if(!entry || !Array.isArray(entry.locations) || entry.locations.length===0){
-                if(locationsEl) locationsEl.textContent = 'Lieux : aucun lieu répertorié';
-                return;
-              }
+      // FETCH RELATIONS
+      fetch('/api/relation')
+        .then(r => r.ok ? r.json() : Promise.reject('Erreur réseau (relations)'))
+        .then(relData => {
+          const relations = relData.index || [];
+          const relation = relations.find(r => (r.id || 0) == artistIdNum || (r.id || 0) == id);
+          const datesLocationsEl = document.getElementById('artist-dates-locations');
+          if (!relation || !relation.datesLocations) return datesLocationsEl.textContent = 'Aucune date de concert disponible';
 
-              const geocodePromises = entry.locations.map(loc => {
-                // turn 'city-country' into a readable query
-                const parts = (loc||'').split('-');
-                const city = (parts[0]||'').replace(/_/g,' ');
-                const country = (parts[1]||'').replace(/_/g,' ');
-                const query = country ? `${city}, ${country}` : city;
-                return fetch('/api/geocode?q=' + encodeURIComponent(query))
-                  .then(rg => { if(!rg.ok) throw new Error('geocode fail'); return rg.json() })
-                  .then(arr => ({ query, result: Array.isArray(arr) && arr.length>0 ? arr[0] : null }))
-                  .catch(() => ({ query, result: null }));
-              });
+          const datesLocations = relation.datesLocations;
+          const locationKeys = Object.keys(datesLocations);
+          if (locationKeys.length === 0) return datesLocationsEl.textContent = 'Aucune date de concert disponible';
 
-              Promise.all(geocodePromises).then(results => {
-                const markers = [];
-                results.forEach(res => {
-                  if(res && res.result && res.result.lat && res.result.lon){
-                    const lat = parseFloat(res.result.lat);
-                    const lon = parseFloat(res.result.lon);
-                    const m = L.marker([lat, lon]).addTo(map).bindPopup(res.query + '<br/>' + (res.result.display_name||''));
-                    markers.push(m);
-                  }
-                });
-                if(markers.length===0){
-                  if(locationsEl) locationsEl.textContent = 'Lieux : pas de coordonnées trouvées';
-                  return;
-                }
-                const group = L.featureGroup(markers);
-                map.fitBounds(group.getBounds(), { padding: [40,40] });
-              });
-            })
-            .catch(err2 => { if(locationsEl) locationsEl.textContent = 'Erreur chargement lieux: '+err2.message });
-        } else {
-          if(locationsEl) locationsEl.textContent = 'Lieux : impossible d\'initialiser la carte';
-        }
-      }
+          // Affichage cartes concerts
+          datesLocationsEl.innerHTML = '';
+          const markers = [];
+          locationKeys.forEach(locationKey => {
+            const locationName = (typeof window.formatLocationName === 'function') 
+              ? window.formatLocationName(locationKey) 
+              : locationKey.replace(/_/g,' ');
+
+            const dates = datesLocations[locationKey];
+
+            datesLocationsEl.appendChild(createConcertCard(locationName, dates));
+
+            // Géocodage pour Leaflet
+            let geoPromise = fetch('/api/geocode?q=' + encodeURIComponent(locationName))
+              .then(rg => rg.ok ? rg.json() : [])
+              .then(arr => arr[0] ? { lat: +arr[0].lat, lon: +arr[0].lon } : null)
+              .catch(() => null);
+
+            if (window.CITY_COORDS && locationKey in window.CITY_COORDS) {
+              geoPromise = Promise.resolve(window.CITY_COORDS[locationKey]);
+            }
+
+            geoPromise.then(coords => {
+              if (!coords) return;
+
+              const marker = L.marker(
+                [coords.lat, coords.lon],
+                { icon: neonMarker }
+              )
+              .addTo(map)
+              .bindPopup(`
+                <div class="map-popup">
+                  <div class="map-popup-title">${locationName}</div>
+                  <div class="map-popup-dates">
+                    <span class="label">Dates :</span>
+                    ${dates.slice(0, 5).join(', ')}${dates.length > 5 ? '...' : ''}
+                  </div>
+                </div>
+              `);
+
+              markers.push([coords.lat, coords.lon]);
+              if (markers.length > 0) map.fitBounds(markers);
+            });
+          });
+        })
+        .catch(err => {
+          console.error("Erreur chargement concerts :", err); // log réel de l'erreur
+          document.getElementById('artist-dates-locations').textContent = 'Erreur lors du chargement des dates et lieux';
+        });
     })
-    .catch(err => { el.textContent = 'Erreur: '+err.message });
+    .catch(err => {
+      document.getElementById('artist-name').textContent = 'Erreur: ' + err;
+      console.error(err);
+    });
 })();
