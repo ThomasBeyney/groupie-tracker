@@ -15,6 +15,13 @@
     maxBoundsViscosity: 1.0   // empêche de dépasser les limites
   }).setView([20, 0], 2);
 
+  const neonMarker = L.divIcon({
+    className: 'neon-marker',
+    html: '<div class="dot"></div>',
+    iconSize: [18, 18],
+    iconAnchor: [9, 9],
+  });
+
   // Ajouter les tuiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
@@ -101,16 +108,22 @@
 
             geoPromise.then(coords => {
               if (!coords) return;
-              const marker = L.marker([coords.lat, coords.lon]).addTo(map)
-                .bindPopup(`
-                  <div class="map-popup">
-                    <div class="map-popup-title">${locationName}</div>
-                    <div class="map-popup-dates">
-                      <span class="label">Dates :</span>
-                      ${dates.slice(0,5).join(', ')}${dates.length > 5 ? '...' : ''}
-                    </div>
-                  </div>
-                `);
+
+              const marker = L.marker(
+                [coords.lat, coords.lon],
+                { icon: neonMarker }
+              )
+              .addTo(map)
+              .bindPopup(`
+                <div class="map-popup">
+                  <strong>${locationName}</strong><br/>
+                  <span class="popup-label">Dates :</span>
+                  <span class="popup-dates">
+                    ${dates.slice(0, 5).join(', ')}${dates.length > 5 ? '...' : ''}
+                  </span>
+                </div>
+              `);
+
               markers.push([coords.lat, coords.lon]);
               if (markers.length > 0) map.fitBounds(markers);
             });

@@ -425,6 +425,29 @@ body{
   font-weight: 600;
 }
 
+.neon-marker .dot {
+  width: 14px;
+  height: 14px;
+  background: #b388ff;
+  border-radius: 50%;
+  box-shadow:
+    0 0 6px #b388ff,
+    0 0 12px rgba(179,136,255,0.8);
+  animation: pulse 1.6s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(179,136,255,0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(179,136,255,0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(179,136,255,0);
+  }
+}
+
 /* FOOTER */
 .footer{ text-align:center; padding:2rem 0; color:var(--text-muted) }
 
