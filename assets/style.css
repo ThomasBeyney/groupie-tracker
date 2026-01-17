@@ -393,6 +393,38 @@ body{
   color: var(--accent-violet);
 }
 
+/* Fond du popup */
+.leaflet-popup-content-wrapper {
+  background: #1a1a1a;
+  border-radius: 14px;
+}
+
+/* Contenu */
+.map-popup {
+  color: #f2f2f2;
+  font-size: 14px;
+}
+
+/* Ville / pays */
+.map-popup-title {
+  color: #8b5cf6; /* violet lisible */
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* Dates */
+.map-popup-dates {
+  color: #f472b6;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Label "Dates :" */
+.map-popup-dates .label {
+  color: #8b5cf6; /* jaune clair */
+  font-weight: 600;
+}
+
 /* FOOTER */
 .footer{ text-align:center; padding:2rem 0; color:var(--text-muted) }
 

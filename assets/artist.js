@@ -102,7 +102,15 @@
             geoPromise.then(coords => {
               if (!coords) return;
               const marker = L.marker([coords.lat, coords.lon]).addTo(map)
-                .bindPopup(`<strong>${locationName}</strong><br/><strong>Dates:</strong> ${dates.slice(0,5).join(', ')}${dates.length > 5 ? '...' : ''}`);
+                .bindPopup(`
+                  <div class="map-popup">
+                    <div class="map-popup-title">${locationName}</div>
+                    <div class="map-popup-dates">
+                      <span class="label">Dates :</span>
+                      ${dates.slice(0,5).join(', ')}${dates.length > 5 ? '...' : ''}
+                    </div>
+                  </div>
+                `);
               markers.push([coords.lat, coords.lon]);
               if (markers.length > 0) map.fitBounds(markers);
             });
