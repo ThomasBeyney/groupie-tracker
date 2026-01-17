@@ -1,8 +1,4 @@
 (function() {
-  if (typeof window.formatLocationName !== 'function') {
-    console.error("window.formatLocationName n'est pas défini !");
-  }
-
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
   if (!id) return document.getElementById('artist-name').textContent = 'Artiste non spécifié';
