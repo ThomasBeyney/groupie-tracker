@@ -1,10 +1,28 @@
 // Fetch /api/artists and render a French-styled card list with a debounced search
-(function(){
+(async function(){
   const container = document.getElementById('artists-list');
   const searchInput = document.getElementById('artist-search');
   if(!container) return;
 
   let artistsData = [];
+
+  async function fetchArtists(){
+    try {
+      const resp = await fetch('/api/artists');
+      if(!resp.ok) throw new Error('Erreur réseau');
+      const data = await resp.json();
+      if(!Array.isArray(data)) { 
+        container.innerHTML = '<div class="big-panel">Réponse inattendue</div>'; 
+        return;
+      }
+
+      artistsData = data;  // Pas de country donc on garde la liste telle quelle
+      renderList(artistsData);
+
+    } catch(err){
+      container.innerHTML = `<div class="big-panel">Échec du chargement des artistes : ${err.message}</div>`;
+    }
+  }
 
   function renderList(items){
     if(!Array.isArray(items)){
@@ -21,7 +39,7 @@
       const card = document.createElement('div');
       card.className = 'card';
 
-      const id = artist.id || artist.ID || artist._id || artist.key || '';
+      const id = artist.id || '';
       const link = document.createElement('a');
       link.href = '/artist?id=' + encodeURIComponent(id);
       link.style.textDecoration = 'none';
@@ -41,11 +59,16 @@
 
       const meta = document.createElement('div');
       meta.className = 'card-meta';
-      meta.innerHTML = `<strong>Début :</strong> ${artist.creationDate || artist.begin_year || 'N/A'} • <strong>Pays :</strong> ${artist.country || 'N/A'}`;
+      meta.innerHTML = `<strong>Début :</strong> ${artist.creationDate || 'N/A'}`;
 
       const members = document.createElement('div');
       members.className = 'card-meta';
-      members.textContent = 'Membres : ' + (Array.isArray(artist.members) ? artist.members.join(', ') : (artist.members || 'N/A'));
+      let count = Array.isArray(artist.members) ? artist.members.length : 0;
+      let label = count <= 1 ? 'Membre' : 'Membres';
+
+      members.innerHTML = `<strong>${label} :</strong> ${
+        Array.isArray(artist.members) ? artist.members.join(', ') : (artist.members || 'N/A')
+      }`;
 
       body.appendChild(title);
       body.appendChild(meta);
@@ -67,22 +90,20 @@
     const filtered = artistsData.filter(a => {
       if((a.name||'').toLowerCase().includes(ql)) return true;
       if(Array.isArray(a.members) && a.members.join(' ').toLowerCase().includes(ql)) return true;
-      if((a.country||'').toLowerCase().includes(ql)) return true;
       return false;
     });
     renderList(filtered);
   }
 
-  function debounce(fn, wait){ let t; return function(...args){ clearTimeout(t); t = setTimeout(()=>fn.apply(this,args), wait); } }
+  function debounce(fn, wait){ 
+    let t; 
+    return function(...args){ 
+      clearTimeout(t); 
+      t = setTimeout(()=>fn.apply(this,args), wait); 
+    } 
+  }
 
-  fetch('/api/artists')
-    .then(resp => { if(!resp.ok) throw new Error('Erreur réseau'); return resp.json() })
-    .then(data => {
-      if(!Array.isArray(data)) { container.innerHTML = '<div class="big-panel">Réponse inattendue</div>'; return }
-      artistsData = data;
-      renderList(artistsData);
-    })
-    .catch(err => { container.innerHTML = `<div class="big-panel">Échec du chargement des artistes : ${err.message}</div>` });
+  fetchArtists();
 
   if(searchInput){
     const handler = debounce(function(e){ filterAndRender(e.target.value); }, 180);
