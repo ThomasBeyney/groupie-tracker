@@ -492,12 +492,54 @@ body{
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+
+.filter-label.collapsible {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+  user-select: none;
+}
+
+.filter-label.collapsible:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.toggle-icon {
+  font-size: 0.7rem;
+  transition: transform 0.3s ease;
+}
+
+.filter-label.collapsed .toggle-icon {
+  transform: rotate(-90deg);
+}
 }
 
 .filter-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.filter-content {
+  max-height: 500px;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+  opacity: 1;
+  margin-top: 0.75rem;
+}
+
+.filter-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+}
+
+.toggle-icon {
+  cursor: pointer;
 }
 
 .filter-tag {

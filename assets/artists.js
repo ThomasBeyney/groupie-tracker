@@ -268,7 +268,39 @@
     } 
   }
 
+  // Collapsible filter sections
+  function initCollapsible(){
+    const collapsibles = document.querySelectorAll('.filter-label.collapsible');
+    collapsibles.forEach(label => {
+      // Start collapsed by default
+      label.classList.add('collapsed');
+      const initialContent = label.nextElementSibling;
+      if(initialContent && initialContent.classList.contains('filter-content')){
+        initialContent.classList.add('collapsed');
+      }
+
+      const toggle = () => {
+        label.classList.toggle('collapsed');
+        const content = label.nextElementSibling;
+        if(content && content.classList.contains('filter-content')){
+          content.classList.toggle('collapsed');
+        }
+      };
+
+      label.addEventListener('click', toggle);
+
+      const icon = label.querySelector('.toggle-icon');
+      if(icon){
+        icon.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggle();
+        });
+      }
+    });
+  }
+
   fetchData();
+  initCollapsible();
 
   if(applyBtn) applyBtn.addEventListener('click', applyFilters);
   if(clearBtn) clearBtn.addEventListener('click', clearFilters);
