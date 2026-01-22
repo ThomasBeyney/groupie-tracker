@@ -234,7 +234,7 @@
       const albumDiv = document.createElement('div'); // Bloc premier album
       albumDiv.className = 'card-meta'; // Classe CSS des métadonnées
       const firstAlbum = artist.firstAlbum || artist.first_album || artist.firstAlbumDate || 'N/A'; // Date du premier album
-      albumDiv.innerHTML = `<strong>1er album :</strong> ${firstAlbum}`; // Injection HTML formatée
+      albumDiv.innerHTML = `<strong>1<sup>er</sup> album :</strong> ${firstAlbum}`; // Injection HTML formatée
 
       const members = document.createElement('div'); // Bloc membres
       members.className = 'card-meta'; // Classe CSS des métadonnées
