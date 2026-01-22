@@ -1,60 +1,60 @@
-<!doctype html>
-<html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Artistes — Groupie Tracker</title>
-    <link rel="stylesheet" href="/assets/style.css" />
-    <link rel="stylesheet" href="/assets/neon.css">
+<!doctype html> <!-- Déclare le type de document HTML5, indispensable pour un rendu standardisé par le navigateur -->
+<html lang="fr"> <!-- Élément racine du document HTML, avec langue définie sur le français pour l’accessibilité et le SEO -->
+  <head> <!-- Début de l’en-tête du document, contient les métadonnées et les ressources -->
+    <meta charset="utf-8" /> <!-- Définit l’encodage UTF-8 pour supporter les caractères spéciaux (accents, symboles, etc.) -->
+    <meta name="viewport" content="width=device-width,initial-scale=1" /> <!-- Rend la page responsive en adaptant l’affichage à la largeur de l’écran -->
+    <title>Artistes — Groupie Tracker</title> <!-- Titre affiché dans l’onglet du navigateur -->
+    <link rel="stylesheet" href="/assets/style.css" /> <!-- Lien vers la feuille de style principale du site -->
+    <link rel="stylesheet" href="/assets/neon.css"> <!-- Lien vers une feuille de style supplémentaire (probablement pour des effets visuels) -->
   </head>
-  <body>
-    <header class="site-header">
-      <div class="container header-inner">
-        <h1 class="site-title">Groupie Tracker</h1>
-        <nav class="main-nav">
-          <a href="/">Accueil</a>
-          <a href="/artists">Artistes</a>
+  <body> <!-- Corps du document, contient tout le contenu visible de la page -->
+    <header class="site-header"> <!-- En-tête du site, généralement utilisé pour le logo et la navigation -->
+      <div class="container header-inner"> <!-- Conteneur pour centrer et structurer le contenu du header -->
+        <h1 class="site-title">Groupie Tracker</h1> <!-- Titre principal du site, important pour le SEO -->
+        <nav class="main-nav"> <!-- Zone de navigation principale -->
+          <a href="/">Accueil</a> <!-- Lien vers la page d’accueil -->
+          <a href="/artists">Artistes</a> <!-- Lien vers la page listant les artistes -->
         </nav>
       </div>
     </header>
 
-    <main class="container">
-      <section class="big-panel">
-        <h2>Artistes</h2>
-        <p class="lead">Liste des artistes récupérés depuis l'API.</p>
-        <div class="search-bar">
-          <input id="artist-search" type="search" placeholder="Rechercher un artiste (nom, membre)..." aria-label="Rechercher un artiste" />
+    <main class="container"> <!-- Contenu principal de la page, unique par page pour l’accessibilité -->
+      <section class="big-panel"> <!-- Bloc principal visuel servant d’introduction à la page -->
+        <h2>Artistes</h2> <!-- Titre de section indiquant le contenu affiché -->
+        <p class="lead">Liste des artistes récupérés depuis l'API.</p> <!-- Texte descriptif expliquant la source des données -->
+        <div class="search-bar"> <!-- Conteneur de la barre de recherche -->
+          <input id="artist-search" type="search" placeholder="Rechercher un artiste (nom, membre)..." aria-label="Rechercher un artiste" /> <!-- Champ de recherche avec accessibilité améliorée via aria-label -->
         </div>
       </section>
 
-      <section class="big-panel filters-panel">
-        <div class="filters-container">
-          <div class="filter-section">
-            <h4 class="filter-label collapsible">Année de création <span class="toggle-icon">▼</span></h4>
-            <div id="creation-filters" class="filter-tags filter-content"></div>
+      <section class="big-panel filters-panel"> <!-- Section dédiée aux filtres avancés -->
+        <div class="filters-container"> <!-- Conteneur regroupant toutes les catégories de filtres -->
+          <div class="filter-section"> <!-- Bloc de filtre pour une catégorie spécifique -->
+            <h4 class="filter-label collapsible">Année de création <span class="toggle-icon">▼</span></h4> <!-- Titre cliquable avec icône indiquant un contenu déroulable -->
+            <div id="creation-filters" class="filter-tags filter-content"></div> <!-- Zone dynamique remplie par JavaScript avec les filtres -->
           </div>
-          <div class="filter-section">
-            <h4 class="filter-label collapsible">Premier album <span class="toggle-icon">▼</span></h4>
-            <div id="album-filters" class="filter-tags filter-content"></div>
+          <div class="filter-section"> <!-- Bloc de filtre pour une autre catégorie -->
+            <h4 class="filter-label collapsible">Premier album <span class="toggle-icon">▼</span></h4> <!-- Titre du filtre avec indication visuelle de dépliage -->
+            <div id="album-filters" class="filter-tags filter-content"></div> <!-- Conteneur vide destiné à recevoir les filtres d’albums -->
           </div>
-          <div class="filter-section">
-            <h4 class="filter-label collapsible">Nombre de membres <span class="toggle-icon">▼</span></h4>
-            <div id="members-filters" class="filter-tags filter-content"></div>
+          <div class="filter-section"> <!-- Bloc de filtre pour le nombre de membres -->
+            <h4 class="filter-label collapsible">Nombre de membres <span class="toggle-icon">▼</span></h4> <!-- Intitulé du filtre avec icône de toggle -->
+            <div id="members-filters" class="filter-tags filter-content"></div> <!-- Zone remplie dynamiquement avec les filtres correspondants -->
           </div>
         </div>
-        <div class="filter-actions">
-          <button id="apply-filters" class="btn-search">Rechercher</button>
-          <button id="clear-filters" class="btn-clear">Effacer</button>
+        <div class="filter-actions"> <!-- Zone regroupant les actions liées aux filtres -->
+          <button id="apply-filters" class="btn-search">Rechercher</button> <!-- Bouton déclenchant l’application des filtres -->
+          <button id="clear-filters" class="btn-clear">Effacer</button> <!-- Bouton permettant de réinitialiser tous les filtres -->
         </div>
       </section>
 
-      <section id="artists-list">
-        <div class="big-panel">Chargement des artistes…</div>
+      <section id="artists-list"> <!-- Section destinée à afficher la liste des artistes -->
+        <div class="big-panel">Chargement des artistes…</div> <!-- Message temporaire affiché avant le chargement des données -->
       </section>
 
-      <p><a href="/">Retour à l'accueil</a></p>
+      <p><a href="/">Retour à l'accueil</a></p> <!-- Lien simple pour revenir à la page principale -->
     </main>
 
-    <script src="/assets/artists.js?v=2"></script>
+    <script src="/assets/artists.js?v=2"></script> <!-- Chargement du script JavaScript avec versioning pour éviter le cache -->
   </body>
-</html>
+</html> <!-- Fin du document HTML -->
