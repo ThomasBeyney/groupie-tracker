@@ -492,6 +492,7 @@ body{
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
 
 .filter-label.collapsible {
   cursor: pointer;
@@ -628,4 +629,3 @@ body{
     width: 100%;
   }
 }
-
