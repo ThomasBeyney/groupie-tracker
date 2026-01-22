@@ -43,7 +43,7 @@ L'objectif est d'avoir un projet simple et fonctionnel, avec un backend solide e
 1. Cloner le projet :
 
 ```bash
-git clone https://github.com/toncompte/groupie-tracker.git
+git clone https://github.com/ThomasBeyney/groupie-tracker.git
 cd groupie-tracker
 ```
 
