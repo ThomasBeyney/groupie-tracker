@@ -130,4 +130,5 @@ Tests inclus :
 ## Références
 
 - Cahier des charges officiel « Groupie Tracker Geolocalization » [source](file://Groupie_Tracker_Geolocalization%20(1).pdf)
-- Leaflet : h
+- Leaflet : https://leafletjs.com/
+- Nominatim API : https://nominatim.org/release-docs/latest/api/Overview/
