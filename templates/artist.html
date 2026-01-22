@@ -1,52 +1,52 @@
-<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Artiste — Groupie Tracker</title>
-  <link rel="stylesheet" href="/assets/style.css" />
-  <link rel="stylesheet" href="/assets/neon.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-</head>
-<body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <h1 class="site-title">Groupie Tracker</h1>
-      <nav class="main-nav">
-        <a href="/">Accueil</a>
-        <a href="/artists">Artistes</a>
-      </nav>
-    </div>
-  </header>
+<!doctype html> <!-- Déclare le type de document HTML5 -->
+<html lang="fr"> <!-- Racine du document, langue définie en français -->
+<head> <!-- En-tête du document contenant les métadonnées -->
+  <meta charset="utf-8" /> <!-- Définit l'encodage en UTF-8 pour supporter les caractères spéciaux -->
+  <meta name="viewport" content="width=device-width,initial-scale=1" /> <!-- Assure un affichage responsive sur mobile -->
+  <title>Artiste — Groupie Tracker</title> <!-- Titre affiché dans l’onglet du navigateur -->
+  <link rel="stylesheet" href="/assets/style.css" /> <!-- Feuille de style principale du site -->
+  <link rel="stylesheet" href="/assets/neon.css" /> <!-- Styles spécifiques (effets néon, markers, etc.) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" /> <!-- CSS requis pour l’affichage de la carte Leaflet -->
+</head> <!-- Fin de l’en-tête -->
+<body> <!-- Corps principal du document -->
+  <header class="site-header"> <!-- En-tête visuel du site -->
+    <div class="container header-inner"> <!-- Conteneur centralisé pour le header -->
+      <h1 class="site-title">Groupie Tracker</h1> <!-- Titre principal du site -->
+      <nav class="main-nav"> <!-- Navigation principale -->
+        <a href="/">Accueil</a> <!-- Lien vers la page d’accueil -->
+        <a href="/artists">Artistes</a> <!-- Lien vers la liste des artistes -->
+      </nav> <!-- Fin de la navigation -->
+    </div> <!-- Fin du conteneur du header -->
+  </header> <!-- Fin du header -->
 
-  <main class="container">
-    <!-- ARTIST INFO -->
-    <section class="big-panel artist-layout">
-      <div class="artist-photo-container">
-        <img id="artist-image" class="artist-photo" src="/assets/images/placeholder.svg" alt="Artiste" />
-      </div>
-      <div class="artist-info">
-        <h2 id="artist-name">Chargement…</h2>
-        <div><strong>Date de création :</strong> <span id="artist-creation-date">—</span></div>
-        <div><strong>Premier album :</strong> <span id="artist-first-album">—</span></div>
-        <div id="artist-country-container" style="display:none"><strong>Pays :</strong> <span id="artist-country">—</span></div>
-        <div id="artist-members"><strong>Membres :</strong> —</div>
-      </div>
-    </section>
+  <main class="container"> <!-- Contenu principal de la page -->
+    <!-- ARTIST INFO --> <!-- Section dédiée aux informations générales de l’artiste -->
+    <section class="big-panel artist-layout"> <!-- Panel principal avec mise en page artiste -->
+      <div class="artist-photo-container"> <!-- Conteneur de la photo de l’artiste -->
+        <img id="artist-image" class="artist-photo" src="/assets/images/placeholder.svg" alt="Artiste" /> <!-- Image de l’artiste avec placeholder par défaut -->
+      </div> <!-- Fin du conteneur photo -->
+      <div class="artist-info"> <!-- Bloc d’informations textuelles de l’artiste -->
+        <h2 id="artist-name">Chargement…</h2> <!-- Nom de l’artiste (remplacé dynamiquement en JS) -->
+        <div><strong>Date de création :</strong> <span id="artist-creation-date">—</span></div> <!-- Date de création du groupe/artiste -->
+        <div><strong>Premier album :</strong> <span id="artist-first-album">—</span></div> <!-- Date ou nom du premier album -->
+        <div id="artist-country-container" style="display:none"><strong>Pays :</strong> <span id="artist-country">—</span></div> <!-- Pays de l’artiste (masqué par défaut) -->
+        <div id="artist-members"><strong>Membres :</strong> —</div> <!-- Liste des membres (injectée en JS) -->
+      </div> <!-- Fin du bloc infos artiste -->
+    </section> <!-- Fin de la section infos artiste -->
 
-    <!-- DATES & LOCATIONS -->
-    <section class="big-panel" id="artist-concerts-panel">
-      <h3>Dates et lieux de concert</h3>
-      <div id="artist-dates-locations">Chargement des dates et lieux…</div>
-      <div id="artist-map"></div>
-    </section>
+    <!-- DATES & LOCATIONS --> <!-- Section dédiée aux concerts -->
+    <section class="big-panel" id="artist-concerts-panel"> <!-- Panel contenant les dates et lieux -->
+      <h3>Dates et lieux de concert</h3> <!-- Titre de la section concerts -->
+      <div id="artist-dates-locations">Chargement des dates et lieux…</div> <!-- Conteneur des cartes/listes de concerts -->
+      <div id="artist-map"></div> <!-- Conteneur de la carte Leaflet -->
+    </section> <!-- Fin de la section concerts -->
 
-    <p><a href="/artists">Retour à la liste des artistes</a></p>
-  </main>
+    <p><a href="/artists">Retour à la liste des artistes</a></p> <!-- Lien de navigation retour -->
+  </main> <!-- Fin du contenu principal -->
 
-  <!-- JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="/assets/cities.js"></script>
-  <script src="/assets/artist.js?v=4"></script>
-</body>
-</html>
+  <!-- JS --> <!-- Scripts JavaScript chargés en fin de page -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script> <!-- Librairie Leaflet pour la carte interactive -->
+  <script src="/assets/cities.js"></script> <!-- Fichier JS contenant des coordonnées de villes -->
+  <script src="/assets/artist.js?v=4"></script> <!-- Script principal de la page artiste (versionné pour le cache) -->
+</body> <!-- Fin du corps du document -->
+</html> <!-- Fin du document HTML -->

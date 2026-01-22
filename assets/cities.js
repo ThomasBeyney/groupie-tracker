@@ -1,4 +1,7 @@
 window.CITY_COORDS = {
+  // Objet global contenant toutes les coordonnées géographiques (lat, lon)
+  // La clé est un identifiant de ville + pays séparé par un tiret
+  // Ex: "los_angeles-usa": { lat: 34.0522, lon: -118.2437 }
   "north_carolina-usa": { lat: 35.7822, lon: -80.7936 },
   "georgia-usa": { lat: 32.1656, lon: -82.9001 },
   "los_angeles-usa": { lat: 34.0522, lon: -118.2437 },
@@ -191,18 +194,20 @@ window.CITY_COORDS = {
 // =============================
 // Formatage lisible des lieux
 // =============================
-window.formatLocationName = function(locationKey) {
-  if (!locationKey || typeof locationKey !== 'string') return locationKey;
+window.formatLocationName = function(locationKey) { // Fonction globale qui prend un identifiant comme "los_angeles-usa" et renvoie une version lisible: "Los Angeles, États-Unis"
+  if (!locationKey || typeof locationKey !== 'string') return locationKey; // Si la clé n’existe pas ou n’est pas une string, renvoyer telle quelle
 
-  const [cityRaw = '', countryRaw = ''] = locationKey.split('-');
+  const [cityRaw = '', countryRaw = ''] = locationKey.split('-'); // On sépare la clé en deux parties: ville et pays. Exemple: "los_angeles-usa" => cityRaw = "los_angeles", countryRaw = "usa"
 
   const capitalizeWords = str =>
     str
-      .replace(/_/g, ' ')
-      .toLowerCase()
-      .replace(/\b\w/g, c => c.toUpperCase());
+      .replace(/_/g, ' ') // Remplace les underscores par des espaces
+      .toLowerCase() // Met tout en minuscules
+      .replace(/\b\w/g, c => c.toUpperCase()); 
+  // Majuscule sur chaque première lettre d’un mot
+  // Exemple: "los_angeles" => "Los Angeles"
 
-  const countryMap = {
+  const countryMap = { // Tableau de correspondance entre code pays et nom français
     usa: 'États-Unis',
     uk: 'Royaume-Uni',
     mexico: 'Mexique',
@@ -249,10 +254,12 @@ window.formatLocationName = function(locationKey) {
   };
 
   const city = capitalizeWords(cityRaw);
+  // Applique le formatage sur le nom de la ville
   const country =
-    countryMap[countryRaw.toLowerCase()] ||
-    capitalizeWords(countryRaw);
+    countryMap[countryRaw.toLowerCase()] || // Si code pays connu, on prend le nom français
+    capitalizeWords(countryRaw); // Sinon on applique un formatage générique
 
   return country ? `${city}, ${country}` : city;
+  // Retourne "Ville, Pays" si pays existe, sinon juste "Ville"
 };
 
