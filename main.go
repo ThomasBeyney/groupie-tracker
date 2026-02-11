@@ -37,7 +37,16 @@ func main() { // Point d’entrée de l’application
 	if err != nil {                                    // Vérifie si une erreur est survenue lors du parsing
 		log.Fatalf("parsing templates: %v", err) // Log fatal et arrêt du programme si erreur
 	}
-
+	// Détecte l'environnement
+	env := os.Getenv("ENVIRONMENT")
+	if env == "" && os.Getenv("PORT") != "" {
+		env = "production"
+	}
+	if env == "production" {
+		log.Println("🔒 Running in PRODUCTION mode - security hardened")
+	} else {
+		log.Println("🔧 Running in DEVELOPMENT mode")
+	}
 	// Serve static assets from the assets/ directory at /assets/
 	fs := http.FileServer(http.Dir("assets"))                 // Crée un FileServer pour servir les fichiers statiques
 	http.Handle("/assets/", http.StripPrefix("/assets/", fs)) // Route pour les assets, enlève le préfixe pour accéder aux fichiers
