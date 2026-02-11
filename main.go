@@ -115,7 +115,11 @@ func geocodeHandler(w http.ResponseWriter, r *http.Request) { // Handler pour la
 		return
 	}
 	// Set a sensible User-Agent as required by Nominatim usage policy
-	req.Header.Set("User-Agent", "GroupieTracker/1.0 (example@example.com)") // Nominatim exige un User-Agent identifiable
+	userAgent := os.Getenv("NOMINATIM_USER_AGENT")
+	if userAgent == "" {
+		userAgent = "GroupieTracker/1.0 (contact@example.com)" // Valeur par défaut
+	}
+	req.Header.Set("User-Agent", userAgent) // Nominatim exige un User-Agent identifiable
 
 	resp, err := client.Do(req) // Exécute la requête
 	if err != nil {             // Vérifie erreurs réseau
