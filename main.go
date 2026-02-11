@@ -11,7 +11,25 @@ import (
 )
 
 var tmpl *template.Template // Variable globale pour stocker les templates pré-parsés
-
+// securityHeaders ajoute les headers de sécurité HTTP recommandés
+func securityHeaders(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Protection contre le clickjacking
+		w.Header().Set("X-Frame-Options", "DENY")
+		// Protection XSS pour les anciens navigateurs
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		// Force HTTPS (uniquement en production)
+		if os.Getenv("PORT") != "" { // Scalingo définit PORT
+			w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+		}
+		// Content Security Policy basique
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;")
+		// Désactive les fonctionnalités dangereuses du navigateur
+		w.Header().Set("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+		
+		next.ServeHTTP(w, r)
+	})
+}
 func main() { // Point d’entrée de l’application
 	// Parse templates from the templates/ directory
 	var err error
@@ -44,7 +62,11 @@ func main() { // Point d’entrée de l’application
 	}
 	addr := ":" + port
 	log.Printf("Starting server at http://localhost%s\n", addr)
-	if err := http.ListenAndServe(addr, nil); err != nil {
+	
+	// Applique le middleware de sécurité à toutes les routes
+	handler := securityHeaders(http.DefaultServeMux)
+	
+	if err := http.ListenAndServe(addr, handler); err != nil {
 		log.Fatalf("server error: %v", err)
 	}
 }
