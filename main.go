@@ -23,8 +23,8 @@ func securityHeaders(next http.Handler) http.Handler {
 		if os.Getenv("PORT") != "" { // Scalingo définit PORT
 			w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 		}
-		// Content Security Policy - permet les scripts inline et les connexions API
-		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://groupietrackers.herokuapp.com https://nominatim.openstreetmap.org;")
+		// Content Security Policy - permet les scripts inline, les connexions API et les CDNs (Leaflet)
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://groupietrackers.herokuapp.com https://nominatim.openstreetmap.org;")
 		// Désactive les fonctionnalités dangereuses du navigateur
 		w.Header().Set("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
 
