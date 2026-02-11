@@ -492,6 +492,7 @@ body{
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
 
 .filter-label.collapsible {
   cursor: pointer;
@@ -515,7 +516,6 @@ body{
 
 .filter-label.collapsed .toggle-icon {
   transform: rotate(-90deg);
-}
 }
 
 .filter-tags {
@@ -628,4 +628,3 @@ body{
     width: 100%;
   }
 }
-
