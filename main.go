@@ -1,4 +1,4 @@
-package main // Déclare le package principal pour l’exécutable Go
+package main // Déclare le package principal pour l'exécutable Go
 
 import (
 	"html/template"
@@ -11,6 +11,7 @@ import (
 )
 
 var tmpl *template.Template // Variable globale pour stocker les templates pré-parsés
+
 // securityHeaders ajoute les headers de sécurité HTTP recommandés
 func securityHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -22,13 +23,23 @@ func securityHeaders(next http.Handler) http.Handler {
 		if os.Getenv("PORT") != "" { // Scalingo définit PORT
 			w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 		}
-	// Content Security Policy - permet les scripts inline et les connexions API
-	w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://groupietrackers.herokuapp.com https://nominatim.openstreetmap.org;")
+		// Content Security Policy - permet les scripts inline et les connexions API
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://groupietrackers.herokuapp.com https://nominatim.openstreetmap.org;")
+		// Désactive les fonctionnalités dangereuses du navigateur
+		w.Header().Set("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func main() { // Point d'entrée de l'application
+	// Parse templates from the templates/ directory
 	var err error
 	tmpl, err = template.ParseGlob("templates/*.html") // Parse tous les fichiers HTML dans templates/
 	if err != nil {                                    // Vérifie si une erreur est survenue lors du parsing
 		log.Fatalf("parsing templates: %v", err) // Log fatal et arrêt du programme si erreur
 	}
+
 	// Détecte l'environnement
 	env := os.Getenv("ENVIRONMENT")
 	if env == "" && os.Getenv("PORT") != "" {
@@ -39,6 +50,7 @@ func securityHeaders(next http.Handler) http.Handler {
 	} else {
 		log.Println("🔧 Running in DEVELOPMENT mode")
 	}
+
 	// Serve static assets from the assets/ directory at /assets/
 	fs := http.FileServer(http.Dir("assets"))                 // Crée un FileServer pour servir les fichiers statiques
 	http.Handle("/assets/", http.StripPrefix("/assets/", fs)) // Route pour les assets, enlève le préfixe pour accéder aux fichiers
@@ -60,8 +72,8 @@ func securityHeaders(next http.Handler) http.Handler {
 
 	// Pages
 	http.HandleFunc("/", indexHandler)              // Handler pour la page d'accueil
-	http.HandleFunc("/artists", artistsPageHandler) // Handler pour la page liste d’artistes
-	http.HandleFunc("/artist", artistPageHandler)   // Handler pour la page d’un artiste spécifique
+	http.HandleFunc("/artists", artistsPageHandler) // Handler pour la page liste d'artistes
+	http.HandleFunc("/artist", artistPageHandler)   // Handler pour la page d'un artiste spécifique
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -69,10 +81,10 @@ func securityHeaders(next http.Handler) http.Handler {
 	}
 	addr := ":" + port
 	log.Printf("Starting server at http://localhost%s\n", addr)
-	
+
 	// Applique le middleware de sécurité à toutes les routes
 	handler := securityHeaders(http.DefaultServeMux)
-	
+
 	if err := http.ListenAndServe(addr, handler); err != nil {
 		log.Fatalf("server error: %v", err)
 	}
@@ -104,25 +116,25 @@ func proxyHandler(remote string) http.HandlerFunc { // Fonction qui retourne un 
 	}
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) { // Handler pour la page d’accueil
+func indexHandler(w http.ResponseWriter, r *http.Request) { // Handler pour la page d'accueil
 	data := struct { // Structure inline pour les données du template
 		Title string
 	}{Title: "Groupie Tracker — Accueil"} // Initialise le titre de la page
 
 	if err := tmpl.ExecuteTemplate(w, "index.html", data); err != nil { // Exécute le template index.html
-		http.Error(w, err.Error(), http.StatusInternalServerError) // Erreur 500 si problème d’exécution
+		http.Error(w, err.Error(), http.StatusInternalServerError) // Erreur 500 si problème d'exécution
 	}
 }
 
-func artistsPageHandler(w http.ResponseWriter, r *http.Request) { // Handler pour la page liste d’artistes
+func artistsPageHandler(w http.ResponseWriter, r *http.Request) { // Handler pour la page liste d'artistes
 	if err := tmpl.ExecuteTemplate(w, "artists.html", nil); err != nil { // Exécute le template artists.html
-		http.Error(w, err.Error(), http.StatusInternalServerError) // Erreur 500 si problème d’exécution
+		http.Error(w, err.Error(), http.StatusInternalServerError) // Erreur 500 si problème d'exécution
 	}
 }
 
-func artistPageHandler(w http.ResponseWriter, r *http.Request) { // Handler pour la page d’un artiste spécifique
+func artistPageHandler(w http.ResponseWriter, r *http.Request) { // Handler pour la page d'un artiste spécifique
 	if err := tmpl.ExecuteTemplate(w, "artist.html", nil); err != nil { // Exécute le template artist.html
-		http.Error(w, err.Error(), http.StatusInternalServerError) // Erreur 500 si problème d’exécution
+		http.Error(w, err.Error(), http.StatusInternalServerError) // Erreur 500 si problème d'exécution
 	}
 }
 
@@ -135,7 +147,7 @@ func geocodeHandler(w http.ResponseWriter, r *http.Request) { // Handler pour la
 	}
 
 	// Build Nominatim URL
-	nomUrl := "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + url.QueryEscape(q) // Construit l’URL pour Nominatim avec encodage
+	nomUrl := "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + url.QueryEscape(q) // Construit l'URL pour Nominatim avec encodage
 
 	client := &http.Client{Timeout: 10 * time.Second}        // Client HTTP avec timeout
 	req, err := http.NewRequest(http.MethodGet, nomUrl, nil) // Crée la requête GET
