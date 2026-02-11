@@ -22,16 +22,8 @@ func securityHeaders(next http.Handler) http.Handler {
 		if os.Getenv("PORT") != "" { // Scalingo définit PORT
 			w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 		}
-		// Content Security Policy basique
-		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;")
-		// Désactive les fonctionnalités dangereuses du navigateur
-		w.Header().Set("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
-		
-		next.ServeHTTP(w, r)
-	})
-}
-func main() { // Point d’entrée de l’application
-	// Parse templates from the templates/ directory
+	// Content Security Policy - permet les scripts inline et les connexions API
+	w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://groupietrackers.herokuapp.com https://nominatim.openstreetmap.org;")
 	var err error
 	tmpl, err = template.ParseGlob("templates/*.html") // Parse tous les fichiers HTML dans templates/
 	if err != nil {                                    // Vérifie si une erreur est survenue lors du parsing
