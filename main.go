@@ -43,11 +43,17 @@ func securityHeaders(next http.Handler) http.Handler {
 	fs := http.FileServer(http.Dir("assets"))                 // Crée un FileServer pour servir les fichiers statiques
 	http.Handle("/assets/", http.StripPrefix("/assets/", fs)) // Route pour les assets, enlève le préfixe pour accéder aux fichiers
 
+	// Get API base URL from environment variable for security
+	apiBaseURL := os.Getenv("API_BASE_URL")
+	if apiBaseURL == "" {
+		apiBaseURL = "https://groupietrackers.herokuapp.com/api" // Valeur par défaut
+	}
+
 	// Proxy API routes (server-side proxy to avoid CORS and centralize access)
-	http.HandleFunc("/api/artists", proxyHandler("https://groupietrackers.herokuapp.com/api/artists"))     // Proxy GET /api/artists
-	http.HandleFunc("/api/locations", proxyHandler("https://groupietrackers.herokuapp.com/api/locations")) // Proxy GET /api/locations
-	http.HandleFunc("/api/dates", proxyHandler("https://groupietrackers.herokuapp.com/api/dates"))         // Proxy GET /api/dates
-	http.HandleFunc("/api/relation", proxyHandler("https://groupietrackers.herokuapp.com/api/relation"))   // Proxy GET /api/relation
+	http.HandleFunc("/api/artists", proxyHandler(apiBaseURL+"/artists"))     // Proxy GET /api/artists
+	http.HandleFunc("/api/locations", proxyHandler(apiBaseURL+"/locations")) // Proxy GET /api/locations
+	http.HandleFunc("/api/dates", proxyHandler(apiBaseURL+"/dates"))         // Proxy GET /api/dates
+	http.HandleFunc("/api/relation", proxyHandler(apiBaseURL+"/relation"))   // Proxy GET /api/relation
 
 	// Geocoding proxy: performs a simple lookup using Nominatim (OpenStreetMap)
 	http.HandleFunc("/api/geocode", geocodeHandler) // Handler spécifique pour la géolocalisation
