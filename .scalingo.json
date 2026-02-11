@@ -1,0 +1,19 @@
+{
+  "name": "groupie-tracker",
+  "description": "A web application to track musician artists",
+  "buildpacks": [
+    {
+      "url": "https://github.com/Scalingo/go-buildpack"
+    }
+  ],
+  "env": {
+    "GO_BUILD_TARGETS": {
+      "description": "Go build targets",
+      "value": "."
+    }
+  },
+  "addons": [],
+  "scripts": {
+    "postdeploy": ""
+  }
+}
