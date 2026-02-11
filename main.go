@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 )
 
@@ -37,7 +38,11 @@ func main() { // Point d’entrée de l’application
 	http.HandleFunc("/artists", artistsPageHandler) // Handler pour la page liste d’artistes
 	http.HandleFunc("/artist", artistPageHandler)   // Handler pour la page d’un artiste spécifique
 
-	addr := ":8080"
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	addr := ":" + port
 	log.Printf("Starting server at http://localhost%s\n", addr)
 	if err := http.ListenAndServe(addr, nil); err != nil {
 		log.Fatalf("server error: %v", err)
